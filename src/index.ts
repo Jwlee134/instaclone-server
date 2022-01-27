@@ -25,31 +25,28 @@ const typeDefs = gql`
   }
   type Query {
     movies: [Movie]
-    movie(title: String!): Movie
+    movie(id: Int!): Movie
   }
   type Mutation {
     createMovie(title: String!, year: Int!, genre: String): Movie
-    deleteMovie(title: String!): Boolean
+    deleteMovie(id: Int!): Movie
+    updateMovie(id: Int!, title: String, year: Int, genre: String): Movie
   }
 `;
 
 const resolvers = {
   Query: {
     movies: () => client.movie.findMany(),
-    movie: (root: any, { title }: any) => {
-      return movies[movies.findIndex((movie) => movie.title === title)];
-    },
+    movie: (root: any, { id }: any) =>
+      client.movie.findUnique({ where: { id } }),
   },
   Mutation: {
     createMovie: (root: any, { title, year, genre }: any) =>
       client.movie.create({ data: { title, year, genre } }),
-    deleteMovie: (root: any, { title }: any) => {
-      movies.splice(
-        movies.findIndex((movie) => movie.title === title),
-        1
-      );
-      return true;
-    },
+    deleteMovie: (root: any, { id }: any) =>
+      client.movie.delete({ where: { id } }),
+    updateMovie: (root: any, { id, ...rest }: any) =>
+      client.movie.update({ where: { id }, data: { ...rest } }),
   },
 };
 
