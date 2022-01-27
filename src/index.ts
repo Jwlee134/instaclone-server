@@ -1,29 +1,50 @@
 import { ApolloServer, gql } from "apollo-server";
 
-const books = [
+const movies = [
   {
     title: "The Awakening",
-    author: "Kate Chopin",
+    year: 2020,
   },
   {
     title: "City of Glass",
-    author: "Paul Auster",
+    year: 2021,
   },
 ];
 
 const typeDefs = gql`
-  type Book {
+  type Movie {
     title: String
-    author: String
+    year: Int
   }
   type Query {
-    books: [Book]
+    movies: [Movie]
+    movie(title: String!): Movie
+  }
+  type Mutation {
+    createMovie(title: String!): Boolean
+    deleteMovie(title: String!): Boolean
   }
 `;
 
 const resolvers = {
   Query: {
-    books: () => books,
+    movies: () => movies,
+    movie: (root: any, { title }: any) => {
+      return movies[movies.findIndex((movie) => movie.title === title)];
+    },
+  },
+  Mutation: {
+    createMovie: (root: any, { title }: any) => {
+      movies.push({ title, year: 2022 });
+      return true;
+    },
+    deleteMovie: (root: any, { title }: any) => {
+      movies.splice(
+        movies.findIndex((movie) => movie.title === title),
+        1
+      );
+      return true;
+    },
   },
 };
 
