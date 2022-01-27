@@ -13,6 +13,7 @@ const movies = [
 
 const typeDefs = gql`
   type Movie {
+    id: Int
     title: String
     year: Int
   }
