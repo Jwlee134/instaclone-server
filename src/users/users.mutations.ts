@@ -22,5 +22,15 @@ export default {
         return error;
       }
     },
+    login: async (root: any, { username, password }: any) => {
+      const user = await client.user.findUnique({ where: { username } });
+      if (!user) {
+        return { isSuccess: false, error: "This user does not exist." };
+      }
+      const isCorrectPw = await bcrypt.compare(password, user.password);
+      if (!isCorrectPw) {
+        return { isSuccess: false, error: "This password is incorrect." };
+      }
+    },
   },
 };
