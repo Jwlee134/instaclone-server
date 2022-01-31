@@ -27,10 +27,12 @@
     "@graphql-tools/schema": "^8.3.1",
     "@prisma/client": "^3.8.1",
     "apollo-server": "^3.6.1",
+    "bcrypt": "^5.0.1",
     "dotenv": "^14.3.2",
     "graphql": "^16.2.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "eslint": "^8.7.0",
