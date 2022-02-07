@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import client from "../client";
 
@@ -16,8 +15,10 @@ export const getUser = async (token?: string | string[]) => {
   }
 };
 
-export const protectResolver = (user: User | null) => {
-  if (!user) {
-    throw new Error("You need to login.");
-  }
-};
+export const protectedResolver =
+  (resolver: any) => (root: any, args: any, context: any, info: any) => {
+    if (!context.loggedInUser) {
+      return { isSuccess: false, error: "You need to login." };
+    }
+    return resolver(root, args, context, info);
+  };
