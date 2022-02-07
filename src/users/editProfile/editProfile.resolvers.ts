@@ -6,8 +6,9 @@ export default {
     editProfile: async (
       root: any,
       { firstName, lastName, username, email, password }: any,
-      { loggedInUser }: any
+      { loggedInUser, protectResolver }: any
     ) => {
+      protectResolver(loggedInUser);
       let hashedPw = null;
       if (password) {
         hashedPw = await bcrypt.hash(password, 10);
