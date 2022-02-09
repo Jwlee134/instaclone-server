@@ -20,6 +20,10 @@ const startServer = async () => {
 
   const app = express();
 
+  // process.cwd() => current working directory === /Users/jaewon/Desktop/instaclone-server
+  // 브라우저 주소 표시줄에 http://localhost:4000/uploads/*에 접속하면 스태틱 파일들을 서빙한다는 의미
+  app.use("/uploads", express.static(process.cwd() + "/uploads"));
+
   app.use(graphqlUploadExpress());
 
   server.applyMiddleware({ app });

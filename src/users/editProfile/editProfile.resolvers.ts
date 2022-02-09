@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { protectedResolver } from "../users.utils";
 import { Resolvers } from "../../types";
+import fs from "fs";
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -10,9 +11,15 @@ const resolvers: Resolvers = {
         { firstName, lastName, username, email, password, bio, avatar },
         { loggedInUser, client }
       ) => {
-        const { createReadStream, filename } = await avatar.promise;
-        const stream = createReadStream();
-        console.log(stream);
+        if (avatar) {
+          const { createReadStream, filename } = await avatar.promise;
+          const stream = createReadStream();
+          const out = fs.createWriteStream(
+            `${process.cwd()}/uploads/${Date.now()}-${filename}`
+          );
+          stream.pipe(out);
+        }
+
         let hashedPw = null;
         if (password) {
           hashedPw = await bcrypt.hash(password, 10);
