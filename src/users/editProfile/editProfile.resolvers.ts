@@ -7,7 +7,7 @@ const resolvers: Resolvers = {
     editProfile: protectedResolver(
       async (
         root,
-        { firstName, lastName, username, email, password },
+        { firstName, lastName, username, email, password, bio },
         { loggedInUser, client }
       ) => {
         let hashedPw = null;
@@ -21,6 +21,7 @@ const resolvers: Resolvers = {
             lastName,
             username,
             email,
+            bio,
             ...(hashedPw && { password: hashedPw }),
           },
         });
