@@ -7,9 +7,11 @@ const resolvers: Resolvers = {
     editProfile: protectedResolver(
       async (
         root,
-        { firstName, lastName, username, email, password, bio },
+        { firstName, lastName, username, email, password, bio, avatar },
         { loggedInUser, client }
       ) => {
+        console.log(avatar);
+        return;
         let hashedPw = null;
         if (password) {
           hashedPw = await bcrypt.hash(password, 10);
