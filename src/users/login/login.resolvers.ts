@@ -1,10 +1,10 @@
-import client from "../../client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Resolvers } from "../../types";
 
-export default {
+const resolvers: Resolvers = {
   Mutation: {
-    login: async (root: any, { username, password }: any) => {
+    login: async (root, { username, password }, { client }) => {
       const user = await client.user.findUnique({ where: { username } });
       if (!user) {
         return { isSuccess: false, error: "This user does not exist." };
@@ -18,3 +18,5 @@ export default {
     },
   },
 };
+
+export default resolvers;

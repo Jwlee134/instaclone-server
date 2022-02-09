@@ -1,21 +1,21 @@
-import client from "../../client";
 import bcrypt from "bcrypt";
 import { protectedResolver } from "../users.utils";
+import { Resolvers } from "../../types";
 
-export default {
+const resolvers: Resolvers = {
   Mutation: {
     editProfile: protectedResolver(
       async (
-        root: any,
-        { firstName, lastName, username, email, password }: any,
-        { loggedInUser }: any
+        root,
+        { firstName, lastName, username, email, password },
+        { loggedInUser, client }
       ) => {
         let hashedPw = null;
         if (password) {
           hashedPw = await bcrypt.hash(password, 10);
         }
         const updatedUser = await client.user.update({
-          where: { id: loggedInUser.id },
+          where: { id: loggedInUser?.id },
           data: {
             firstName,
             lastName,
@@ -33,3 +33,5 @@ export default {
     ),
   },
 };
+
+export default resolvers;
