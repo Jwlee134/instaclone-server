@@ -11,11 +11,14 @@ const resolvers: Resolvers = {
         { firstName, lastName, username, email, password, bio, avatar },
         { loggedInUser, client }
       ) => {
+        let avatarUrl = null;
         if (avatar) {
-          const { createReadStream, filename } = await avatar.promise;
+          const { createReadStream, filename: orgFileName } =
+            await avatar.promise;
+          avatarUrl = `${Date.now()}-${orgFileName}`;
           const stream = createReadStream();
           const out = fs.createWriteStream(
-            `${process.cwd()}/uploads/${Date.now()}-${filename}`
+            `${process.cwd()}/uploads/${avatarUrl}`
           );
           stream.pipe(out);
         }
@@ -32,6 +35,9 @@ const resolvers: Resolvers = {
             username,
             email,
             bio,
+            ...(avatarUrl && {
+              avatar: `http://localhost:4000/uploads/${avatarUrl}`,
+            }),
             ...(hashedPw && { password: hashedPw }),
           },
         });
