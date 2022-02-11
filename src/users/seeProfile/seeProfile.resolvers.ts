@@ -4,10 +4,7 @@ const resolvers: Resolvers = {
   Query: {
     seeProfile: async (root, { username }, { client }) => {
       try {
-        const user = await client.user.findUnique({
-          where: { username },
-          include: { followers: true, following: true },
-        });
+        const user = await client.user.findUnique({ where: { username } });
         if (!user) {
           throw new Error("This user does not exist.");
         }
