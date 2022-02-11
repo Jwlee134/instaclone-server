@@ -8,10 +8,23 @@ const resolvers: Resolvers = {
     // 이 사람의 팔로잉 수 === 팔로워 리스트에 이 사람의 id가 존재하는 모든 유저들의 수
     totalFollowing: ({ id }, args, { client }) =>
       client.user.count({ where: { followers: { some: { id } } } }),
+
     // 이 사람의 팔로워 수 === 팔로잉 리스트에 이 사람의 id가 존재하는 모든 유저들의 수
     totalFollowers: ({ id }, args, { client }) =>
       client.user.count({ where: { following: { some: { id } } } }),
+
     isMe: ({ id }, args, { loggedInUser }) => id === loggedInUser?.id,
+
+    isFollowing: async ({ id }, args, { loggedInUser, client }) => {
+      if (!loggedInUser) return false;
+      //   const ok = await client.user
+      //     .findUnique({ where: { id: loggedInUser.id } })
+      //     .following({ where: { id } });
+      const exists = await client.user.count({
+        where: { id: loggedInUser.id, following: { some: { id } } },
+      });
+      return Boolean(exists);
+    },
   },
 };
 
