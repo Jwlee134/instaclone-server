@@ -7,6 +7,15 @@ const resolvers: Resolvers = {
     hashtags: ({ id }, args, { client }) =>
       client.hashtag.findMany({ where: { photos: { some: { id } } } }),
   },
+  Hashtag: {
+    totalPhotos: ({ id }, args, { client }) =>
+      client.photo.count({ where: { hashtags: { some: { id } } } }),
+    photos: ({ id }, { lastId }, { client }) =>
+      client.hashtag.findUnique({ where: { id } }).photos({
+        take: 5,
+        ...(lastId && { skip: 1, cursor: { id: lastId } }),
+      }),
+  },
 };
 
 export default resolvers;
