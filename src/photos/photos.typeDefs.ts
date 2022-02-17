@@ -6,13 +6,13 @@ export default gql`
     owner: User
     file: String!
     caption: String
-    hashtags: [HashTag]
+    hashtags: [Hashtag]
     createdAt: String!
     updatedAt: String!
   }
-  type HashTag {
+  type Hashtag {
     id: Int!
-    hashTag: String!
+    hashtag: String!
     photos: [Photo]
     createdAt: String!
     updatedAt: String!
