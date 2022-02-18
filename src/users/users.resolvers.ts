@@ -5,6 +5,13 @@ import { Resolvers } from "../types";
 
 const resolvers: Resolvers = {
   User: {
+    photos: ({ id }, { lastId }, { client }) =>
+      client.user
+        .findUnique({ where: { id } })
+        .photos({
+          take: 5,
+          ...(lastId && { skip: 1, cursor: { id: lastId } }),
+        }),
     // 이 사람의 팔로잉 수 === 팔로워 리스트에 이 사람의 id가 존재하는 모든 유저들의 수
     totalFollowing: ({ id }, args, { client }) =>
       client.user.count({ where: { followers: { some: { id } } } }),
