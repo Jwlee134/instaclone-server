@@ -16,10 +16,15 @@ const resolvers: Resolvers = {
           },
         });
         if (like) {
+          await client.like.delete({ where: { id: like.id } });
+        } else {
+          await client.like.create({
+            data: {
+              user: { connect: { id: (loggedInUser as User).id } },
+              photo: { connect: { id } },
+            },
+          });
         }
-        await client.like.create({
-          data: { photoId: id, userId: (loggedInUser as User).id },
-        });
         return { isSuccess: true };
       }
     ),
