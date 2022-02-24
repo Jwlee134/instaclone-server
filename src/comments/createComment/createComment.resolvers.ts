@@ -5,9 +5,10 @@ const resolvers: Resolvers = {
   Mutation: {
     createComment: protectedResolver(
       async (root, { id, text }, { client, loggedInUser }) => {
+        console.log(id, text);
         const photo = await client.photo.findUnique({
           where: { id },
-          select: { id },
+          select: { id: true },
         });
         if (!photo) {
           return { isSuccess: false, error: "Cannot find photo." };
