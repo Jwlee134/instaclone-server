@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { protectedResolver } from "../users.utils";
 import { Resolvers } from "../../types";
-import { uploadPhoto } from "../../shared/shared.utils";
+import { uploadPhotoToS3 } from "../../shared/shared.utils";
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -21,7 +21,7 @@ const resolvers: Resolvers = {
           //   `${process.cwd()}/uploads/${avatarUrl}`
           // );
           // stream.pipe(out);
-          avatarUrl = await uploadPhoto(avatar);
+          avatarUrl = await uploadPhotoToS3(avatar, "avatars");
         }
 
         let hashedPw = null;

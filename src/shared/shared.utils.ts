@@ -8,15 +8,24 @@ AWS.config.update({
   },
 });
 
-export const uploadPhoto = async (file: any) => {
+const Bucket = "instaclone-jw";
+
+export const uploadPhotoToS3 = async (file: any, folder?: string) => {
   const { createReadStream, filename } = await file;
   const { Location } = await new S3()
     .upload({
       Body: createReadStream(),
-      Bucket: "instaclone-jw",
-      Key: `${Date.now()}-${filename}`,
+      Bucket,
+      Key: `${folder}/${Date.now()}-${filename}`,
       ACL: "public-read",
     })
     .promise();
   return Location;
+};
+
+export const deletePhotoFromS3 = async (file: string) => {
+  const nameArr = file.split("com/");
+  await new S3()
+    .deleteObject({ Bucket, Key: decodeURI(nameArr[nameArr.length - 1]) })
+    .promise();
 };

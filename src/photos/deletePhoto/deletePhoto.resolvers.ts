@@ -1,3 +1,4 @@
+import { deletePhotoFromS3 } from "../../shared/shared.utils";
 import { Resolvers } from "../../types";
 import { protectedResolver } from "../../users/users.utils";
 
@@ -15,7 +16,11 @@ const resolvers: Resolvers = {
         if (photo.userId !== loggedInUser?.id) {
           return { isSuccess: false, error: "You are not the owner." };
         }
-        await client.photo.delete({ where: { id } });
+        const { file } = await client.photo.delete({
+          where: { id },
+          select: { file: true },
+        });
+        await deletePhotoFromS3(file);
         return { isSuccess: true };
       }
     ),
