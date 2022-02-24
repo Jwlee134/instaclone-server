@@ -8,6 +8,8 @@ const resolvers: Resolvers = {
       client.hashtag.findMany({ where: { photos: { some: { id } } } }),
     likes: ({ id }, args, { client }) =>
       client.like.count({ where: { photoId: id } }),
+    comments: ({ id }, args, { client }) =>
+      client.comment.count({ where: { photoId: id } }),
   },
   Hashtag: {
     totalPhotos: ({ id }, args, { client }) =>
