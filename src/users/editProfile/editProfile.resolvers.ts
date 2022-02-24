@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { protectedResolver } from "../users.utils";
 import { Resolvers } from "../../types";
-import fs from "fs";
+import { uploadPhoto } from "../../shared/shared.utils";
 
 const resolvers: Resolvers = {
   Mutation: {
@@ -13,14 +13,15 @@ const resolvers: Resolvers = {
       ) => {
         let avatarUrl = null;
         if (avatar) {
-          const { createReadStream, filename: orgFileName } =
-            await avatar.promise;
-          avatarUrl = `${Date.now()}-${orgFileName}`;
-          const stream = createReadStream();
-          const out = fs.createWriteStream(
-            `${process.cwd()}/uploads/${avatarUrl}`
-          );
-          stream.pipe(out);
+          // const { createReadStream, filename: orgFileName } =
+          //   await avatar.promise;
+          // avatarUrl = `${Date.now()}-${orgFileName}`;
+          // const stream = createReadStream();
+          // const out = fs.createWriteStream(
+          //   `${process.cwd()}/uploads/${avatarUrl}`
+          // );
+          // stream.pipe(out);
+          avatarUrl = await uploadPhoto(avatar);
         }
 
         let hashedPw = null;
@@ -35,9 +36,7 @@ const resolvers: Resolvers = {
             username,
             email,
             bio,
-            ...(avatarUrl && {
-              avatar: `http://localhost:4000/uploads/${avatarUrl}`,
-            }),
+            ...(avatarUrl && { avatar: avatarUrl }),
             ...(hashedPw && { password: hashedPw }),
           },
         });
