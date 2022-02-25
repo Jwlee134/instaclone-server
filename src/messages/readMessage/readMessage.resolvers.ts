@@ -14,7 +14,7 @@ const resolvers: Resolvers = {
           select: { id: true },
         });
         if (!message) {
-          return { isSucess: false, error: "Cannot find message." };
+          return { isSuccess: false, error: "Cannot find message." };
         }
         await client.message.update({
           where: { id: message.id },

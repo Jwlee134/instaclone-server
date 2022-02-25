@@ -12,23 +12,28 @@ const resolvers: Resolvers = {
         if (!user) {
           return { isSuccess: false, error: "Cannot find user." };
         }
-        const room = await client.room.findUnique({
-          where: { id: roomId },
-          select: { id: true },
-        });
+        let room;
+        if (roomId) {
+          room = await client.room.findUnique({
+            where: { id: roomId },
+            select: { id: true },
+          });
+          if (!room) {
+            return { isSuccess: false, error: "Cannot find room." };
+          }
+        } else {
+          room = await client.room.create({
+            data: {
+              users: {
+                connect: [{ id: userId }, { id: loggedInUser?.id }],
+              },
+            },
+          });
+        }
         await client.message.create({
           data: {
             text,
-            room: {
-              connectOrCreate: {
-                create: {
-                  users: {
-                    connect: [{ id: userId }, { id: loggedInUser?.id }],
-                  },
-                },
-                where: { id: room?.id },
-              },
-            },
+            room: { connect: { id: room.id } },
             user: { connect: { id: loggedInUser?.id } },
           },
         });
