@@ -10,6 +10,14 @@ const resolvers: Resolvers = {
         take: 20,
         ...(lastId && { skip: 1, cursor: { id: lastId } }),
       }),
+    totalUnread: ({ id }, args, { client, loggedInUser }) =>
+      client.message.count({
+        where: {
+          roomId: id,
+          read: false,
+          user: { id: { not: loggedInUser?.id } },
+        },
+      }),
   },
 };
 
