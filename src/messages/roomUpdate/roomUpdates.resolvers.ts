@@ -6,10 +6,19 @@ import { Resolvers } from "../../types";
 const resolvers: Resolvers = {
   Subscription: {
     roomUpdates: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator(NEW_MESSAGE),
-        (payload, variables) => payload.roomUpdates.roomId === variables.id
-      ),
+      subscribe: async (root, args, context, info) => {
+        const room = await context.client.room.findUnique({
+          where: { id: args.id },
+          select: { id: true },
+        });
+        if (!room) {
+          throw new Error("Cannot find room.");
+        }
+        return withFilter(
+          () => pubsub.asyncIterator(NEW_MESSAGE),
+          (payload, variables) => payload.roomUpdates.roomId === variables.id
+        )(root, args, context, info);
+      },
     },
   },
 };
