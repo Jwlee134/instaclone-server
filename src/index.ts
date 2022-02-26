@@ -24,7 +24,15 @@ const startServer = async () => {
   const httpServer = createServer(app);
 
   const subscriptionServer = SubscriptionServer.create(
-    { schema, execute, subscribe },
+    {
+      schema,
+      execute,
+      subscribe,
+      onConnect: async ({ token }: any) => ({
+        loggedInUser: await getUser(token),
+        client,
+      }),
+    },
     { server: httpServer, path: "/graphql" }
   );
 
