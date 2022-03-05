@@ -8,8 +8,13 @@ const resolvers: Resolvers = {
       client.hashtag.findMany({ where: { photos: { some: { id } } } }),
     likes: ({ id }, args, { client }) =>
       client.like.count({ where: { photoId: id } }),
-    comments: ({ id }, args, { client }) =>
+    numOfComments: ({ id }, args, { client }) =>
       client.comment.count({ where: { photoId: id } }),
+    comments: ({ id }, args, { client }) =>
+      client.comment.findMany({
+        where: { photoId: id },
+        include: { user: true },
+      }),
     isMine: ({ userId }, args, { loggedInUser }) => userId === loggedInUser?.id,
     isLiked: async ({ id }, args, { client, loggedInUser }) => {
       if (!loggedInUser) return false;
